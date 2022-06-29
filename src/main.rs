@@ -1,11 +1,20 @@
 use rand::Rng;
 
-use std::time::{Duration, Instant};
+use std::time::{Instant};
 
 const OUTPUT_LENGTH: usize = 1000000;
 const CHANCE_TO_SET: u32   = 10;
 
 fn main() {
+    println!(
+        "SETTINGS:
+        OUTPUT LENGTH: {}
+        CHANCE TO SET EACH ELEMENT: {}%
+        ",
+        OUTPUT_LENGTH,
+        CHANCE_TO_SET
+    );
+
     println!("\nNAIVE ALGORITHM: ");
     
     {
@@ -16,13 +25,13 @@ fn main() {
         println!("NAIVE ALGORITHM TIME: {:?}", duration);
     }
 
-    println!("\nNEW ALGORITHM: ");
+    println!("\nQUICKARRAND: ");
     {
         let start = Instant::now();
-        print_output(&new_al());
+        print_output(&quickarrand_al());
         let duration = start.elapsed();
 
-        println!("NEW ALGORITHM TIME: {:?}", duration);
+        println!("QUICKARRAND TIME: {:?}", duration);
     }}
 
 fn print_output(out: &Vec<bool>) {
@@ -90,7 +99,7 @@ fn naive_al() -> Vec<bool> {
     out
 }
 
-fn new_al() -> Vec<bool> {
+fn quickarrand_al() -> Vec<bool> {
     const CHANCE_TO_SET_F64: f64 = CHANCE_TO_SET as f64;
 
     // Formula: (100 - C) / C 
