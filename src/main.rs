@@ -1,37 +1,29 @@
-/*
-(normal)
-for i in array:
-    i = {
-        if random_inclusve(0, 99) < n:
-            ON
-        else:
-            OFF
-    }
-
-(new)
-i = 0
-while i in 0..array.len():
-    array[i] = 1
-    i += random_inclusive(0, (100/n).ceil())
-    
-*/
-
-// 2.33333 = (100 - 30) / 30
-
-// ! I do not believe I can make the new_al() work due to rounding errors from converting it to a usize. Unsure.
-
 use rand::Rng;
 
-const OUTPUT_LENGTH: usize = 1_000_000;
-const CHANCE_TO_SET: u32   = 35;
+use std::time::{Duration, Instant};
+
+const OUTPUT_LENGTH: usize = 1000000;
+const CHANCE_TO_SET: u32   = 10;
 
 fn main() {
     println!("\nNAIVE ALGORITHM: ");
-    print_output(&naive_al());
+    
+    {
+        let start = Instant::now();
+        print_output(&naive_al());
+        let duration = start.elapsed();
+
+        println!("NAIVE ALGORITHM TIME: {:?}", duration);
+    }
 
     println!("\nNEW ALGORITHM: ");
-    print_output(&new_al());
-}
+    {
+        let start = Instant::now();
+        print_output(&new_al());
+        let duration = start.elapsed();
+
+        println!("NEW ALGORITHM TIME: {:?}", duration);
+    }}
 
 fn print_output(out: &Vec<bool>) {
     let count = out.len();
@@ -100,20 +92,28 @@ fn naive_al() -> Vec<bool> {
 
 fn new_al() -> Vec<bool> {
     const CHANCE_TO_SET_F64: f64 = CHANCE_TO_SET as f64;
+
+    // Formula: (100 - C) / C 
     const EXPECTED_AVERAGE_GROUPS_OF_FALSE: f64 = (100. - CHANCE_TO_SET_F64) / CHANCE_TO_SET_F64;
 
     let mut out: Vec<bool> = vec![false; OUTPUT_LENGTH];
     let mut rng = rand::thread_rng();
 
-    let mut i: usize = 0;
-    while i < OUTPUT_LENGTH {
-        out[i] = true;
-        i += rng.gen_range(
-            0..
-            (
-                ((EXPECTED_AVERAGE_GROUPS_OF_FALSE) * 200.0) as usize
+    let mut i: f64 = 0.;
+    while (i as usize) < OUTPUT_LENGTH {
+        out[i as usize] = true;
+
+        let jump = {
+            rng.gen_range(
+                1.0..=
+                (
+                    ((EXPECTED_AVERAGE_GROUPS_OF_FALSE) * 2.0) + 1.0
+                )
             )
-        );
+        };
+
+        //println!("{}", jump);
+        i += jump;
     }
 
     out
