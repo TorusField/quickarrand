@@ -1,4 +1,4 @@
-# New-Randomized-Array-Algorithm
+# quickarrand
 
 This is an algorithm to randomize a vector of bools, with a variable chance out of 100 to randomize each element, which can be faster than the naive method of simply looping through each element.
 
